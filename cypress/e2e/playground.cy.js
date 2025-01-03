@@ -9,17 +9,20 @@ describe('Cypress Playground', () => {
       // implementação do caso de teste aqui.
     })
 
+    // clica no botão assinar e mostra uma mensagem de sucesso.
     it('clicks the Subscribe button and showss a success message', () => {
         cy.contains('button', 'Subscribe').click()
         cy.contains('#success', "You've been successfully subscribed to our newsletter.").should('be.visible')
     })
 
+    // digita uma entrada que "assina" um formulário, afirma que ele é assinado.
     it('types in an input whict "signs" a form, the asserts it is signed', () => {
         cy.get('#signature-textarea').type('Salomão')
         cy.contains('#signature', 'Salomão').should('be.visible')
     })
 
-    it('types in the signature field, checks the checkbox to see the preview, the unchack', () => {
+    // verifica se a assinatura é exibida quando a caixa de seleção é marcada e se desaparece quando a caixa de seleção é desmarcada.
+    it('types in the signature field, checks the checkbox to see the preview, the uncheck', () => {
         cy.get('#signature-textarea-with-checkbox').type('Salomão')
         cy.get('#signature-checkbox').check()
         cy.contains('#signature-triggered-by-check', 'Salomão').should('be.visible')
@@ -27,6 +30,7 @@ describe('Cypress Playground', () => {
         cy.contains('#signature-triggered-by-check', 'Salomão').should('not.exist')
     })
 
+    // verifica ambos os radios possíveis e afirma se está "ligado" ou "desligado"
     it('checks both possible radios and asserts if it is "on" or "off"', () => {
         cy.contains('#on-off', 'ON').should('be.visible')
         
@@ -41,6 +45,7 @@ describe('Cypress Playground', () => {
         cy.contains('#on-off', 'OFF').should('not.exist')
     })
 
+    // verifica se as mensagens corretas são exibidas ao selecionar diferentes opções no campo dropdown.
     it('selects a type via the dropdown field and asserts on the selection', () => {
     cy.contains('p', "You haven't selected a type yet.").should('be.visible')
 
@@ -55,6 +60,7 @@ describe('Cypress Playground', () => {
 
     })    
 
+    // verifica se a seleção múltipla de frutas no campo dropdown funciona corretamente e se a mensagem correta é exibida após a seleção.
     it('selects multiple fruits via the dropdown field and asserts on the selection', () => {
         cy.contains ('p', "You haven't selected any fruit yet.")
         cy.get('#fruit').select(['apple', 'banana', 'cherry'])
@@ -62,12 +68,14 @@ describe('Cypress Playground', () => {
         .should('be.visible')
 })
 
+    // carrega um arquivo e afirma que o nome correto do arquivo aparece como um parágrafo.
     it('uploads a file and asserts the correct file name appears as a paragraph', () => {
     cy.get('input[type="file"]').selectFile('./cypress/fixtures/example.json')
     
     cy.contains('p', 'The following file has been selected for upload: example.json').should('be.visible')
     })
 
+    // verifica se a requisição GET é feita corretamente ao clicar no botão e se os dados retornados são exibidos corretamente na página.
     it('clicks a button and triggers a request', () => {
         cy.intercept('GET', 'https://jsonplaceholder.typicode.com/todos/1')
         .as('getTodo')
@@ -83,6 +91,7 @@ describe('Cypress Playground', () => {
         cy.contains('li', 'User ID: 1').should('be.visible')
     })
 
+    // clica em um botão e aciona uma solicitação fragmentada.
     it('clicks a button and triggers a stubbed request', () => {
         const todo = require('../fixtures/todo.json');
         
@@ -99,6 +108,7 @@ describe('Cypress Playground', () => {
         cy.contains('li', `User ID: ${todo.userId}`).should('be.visible');
     });
     
+    // clica em um botão e simula uma falha de API.
     it('clicks a button and simulates an API failure', () => {
         cy.intercept('GET','https://jsonplaceholder.typicode.com/todos/1',
         { statusCode: 500 } ).as('serverFailure')
@@ -107,6 +117,7 @@ describe('Cypress Playground', () => {
         cy.contains('span', 'Oops, something went wrong. Refresh the page and try again.').should('be.visible')
         })
         
+        // clica em um botão e simula uma falha de rede.
         it('clicks a button and simulates a network failure', () => {
             cy.intercept('GET', 'https://jsonplaceholder.typicode.com/todos/1', { forceNetworkError: true }).as('networkError');
             cy.contains('button', 'Get TODO').click();
@@ -115,6 +126,7 @@ describe('Cypress Playground', () => {
               .should('be.visible');
         })      
 
+        // faz uma solicitação HTTP e declara no código de status retornado.
         it('makes an HTTP request and asserts on the returned status code', () => {
             cy.request('GET', 'https://jsonplaceholder.typicode.com/todos/1')
             .its('status')
@@ -135,6 +147,8 @@ describe('Cypress Playground', () => {
         })
 
     })
+
+        // digita uma senha com base em uma variável protegida sem vazá-la.
         it('types a password based on a protected variable without leaking it', () => {
         cy.get('#password')
         .type(Cypress.env('password'), { log: false })
@@ -152,15 +166,17 @@ describe('Cypress Playground', () => {
     })    
 
 
+    // conta o número de animais em uma lista.
         it('counts the number of animals in a list', () => {
         cy.get('ul#animals li').should('have.length', 5)
 })
 
-it('freezes the browser clock and asserts the frozen date is displayed', () => {
+    // congela o relógio do navegador e afirma que a data congelada é exibida.
+    it('freezes the browser clock and asserts the frozen date is displayed', () => {
     cy.contains('p', 'Current date: 2024-04-15').should('be.visible')
 })
-
-it('copies the code, types it, submits it, then asserts on the success message', () => {
+    // copia o código, digita, envia e em seguida declara a mensagem de sucesso.
+    it('copies the code, types it, submits it, then asserts on the success message', () => {
     cy.get('#timestamp')
     .then(element => {
         const code = element[0].innerText
@@ -172,14 +188,16 @@ it('copies the code, types it, submits it, then asserts on the success message',
     })
 })
 
-it('types an incorrect code and asserts on the error message', () => {
+    // digita um código incorreto e afirma na mensagem de erro.
+    it('types an incorrect code and asserts on the error message', () => {
     cy.get('#code').type('1234567890')
     cy.contains('button', 'Submit').click()
     
     cy.contains("The provided code isn't correct. Please, try again.").should('be.visible')
 })
 
-it('downloads a file, reads it, and asserts on its content', () => {
+    // verifica se o arquivo de texto é baixado corretamente e se o seu conteúdo corresponde ao esperado.
+    it('downloads a file, reads it, and asserts on its content', () => {
     cy.contains('a', 'Download a text file').click()
     
     cy.readFile('cypress/downloads/example.txt')
